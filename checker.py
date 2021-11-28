@@ -19,7 +19,6 @@ def FUNC_write_to_the_file(data, filename):
     file.close()
 
 # MAIN PROGRAM
-print("------------------------------")
 print("Checking args...")
 
 if len(sys.argv) == 1:
@@ -28,7 +27,7 @@ for i in [1, 2]:
     if not OSpath.isfile(sys.argv[i]):
         FUNC_exit_with_error("NOT FOUND: "+sys.argv[i])
 
-print("Preparing FEED file....", end="")
+print("Preparing FEED file.............", end="")
 TEMP = FUNC_read_file(sys.argv[1])
 FEED_original = []
 NEXTLINE = False
@@ -51,7 +50,7 @@ for line in TEMP:
 print(str(len(FEED_original)) + " items")
 
 
-print("Preparing ID list......", end="")
+print("Preparing ID list...............", end="")
 TEMP = FUNC_read_file(sys.argv[2])
 ID_list = {}
 
@@ -68,82 +67,45 @@ for line in TEMP:
     ID_list[temp_key] = temp_value
 print(str(len(ID_list)) + " items")
 
+input("Press ENTER to continue...")
 
 
-# for key in ID_list.keys():
-    # print(ID_list[key] + " || " + key)
+# MAIN CYCLE
+FINAL_ID_list = []
+FOUND_IDs_counter = 0
+for index in range(len(FEED_original)):
+    print("Searching Type ID for item №...." + str(index+1), end="\r")
+    FOUND_ID = {}
+    for key in ID_list.keys():
+        STR_FOUND = FEED_original[index].find(key)
+        if STR_FOUND > -1:                                                            # Если -1, значит, ничего не найдено.
+            FOUND_ID[key] = ID_list[key]
+    if len(FOUND_ID):
+        maxlenth = 0
+        maxkey = ""
+        for i in FOUND_ID.keys():
+            if len(i) > maxlenth:
+                maxlenth = len(i)
+                maxkey = i
+        FINAL_ID_list.append(FOUND_ID[maxkey] + "\n")
+        FOUND_IDs_counter += 1
+    else:
+        FINAL_ID_list.append("\n")
 
-# for index in range(len(FEED_original)):
-#     # for key in ID_list.keys():
-#     #     STR_FOUND = FUNC_find_substring(key, FEED_original[index])
-#     #     if STR_FOUND:
-#     #         print(FEED_original[index][:-1] + " || " + key + " || " + ID_list[key])
-#
-#
-#     string = FEED_original[index]
-#     STR_FOUND = string.find(substring)("Гайка", "Гайка")
-#     if STR_FOUND > -1:                                                                      # Если -1, значит, ничего не найдено.
-#         print(FEED_original[index][:-1] + " || " + "гайка" + " || " + ID_list["Гайка"])
 
+# finalizing
+final_filename   = "KEYS FOR " + sys.argv[1][2:]
+final_percentage = 100*FOUND_IDs_counter/len(FEED_original)
 
-# temp = FUNC_find_substring_return_before(".txt", sys.argv[1])
-# NEW_filename = temp+" formatted.csv"
-#
-# # making the first few mandatory lines
-# print("Making the first few mandatory lines...")
-#
-# for string in DATA_original:
-#     tempTEXT = FUNC_find_substring_return_after("string m_Name = ", string, 1)
-#     if tempTEXT:
-#         DATA_new = ['Key,' + tempTEXT[1:-1] + ',NOTES,' + NEW_filename + ',\n',
-#                     ',,,,,,,,,,,,,,,,,,,\n',
-#                     'UseCyrillicFont,No,"Пометка для переводчиков: поставьте на позиции (между разделителями) вашего языка «Yes», если используете кириллицу",Yes,\n',
-#                     ',,,,,,,,,,,,,,,,,,,\n']
-#         break
-#
-# # check total amount of KEYS
-# temp_counter = False
-# for string in DATA_original:
-#     tempTEXT = FUNC_find_substring_return_after("int size = ", string, 1)
-#     if tempTEXT:
-#         if temp_counter:
-#             print("KEYS total....................."+tempTEXT)
-#             break
-#         else:
-#             temp_counter = True
-#
-# # making KEYS + ingame strings
-# print("Making KEYS + ingame strings...", end="")
-#
-# string_counter = 0
-# key_is_opened = False
-#
-# for string in DATA_original:
-#     if key_is_opened:
-#         if string[0] == '\t':
-#             DATA_new[-1] += ',,,\n'
-#             key_is_opened = False
-#         else:
-#             DATA_new[-1] += '\n'
-#             DATA_new.append(string[:-1])
-#     else:
-#         tempTEXT = FUNC_find_substring_return_after("string m_Key = ", string, 1)
-#         if tempTEXT:
-#             string_counter += 1
-#             print("\rMaking KEYS + ingame strings..."+str(string_counter), end="")
-#             DATA_new.append(tempTEXT[1:-1]+',')
-#         elif string_counter:
-#             tempTEXT = FUNC_find_substring_return_after("string data = ", string, 1)
-#             if tempTEXT:
-#                 DATA_new[-1] += tempTEXT
-#                 key_is_opened = True
-#
-# # finalizing
-# print()
-# print("Writing to the file...")
-# FUNC_write_to_the_file(DATA_new, NEW_filename)
-# print()
-# print("------------------------------")
-# print("DONE! Check this file:")
-# print(" "+NEW_filename)
-# print("------------------------------")
+print()                                                                             # перевод на новую строку в конце программы
+print("Writing to the file...")
+print()
+FUNC_write_to_the_file(FINAL_ID_list, final_filename)
+print("-------------------------------------------")
+print("DONE!")
+print("Found IDs:......................" + str(FOUND_IDs_counter), end=" ")
+print("(" + str(final_percentage)[:4] + "%)")
+print()
+print("Your IDs was written to this file:")
+print("   " + final_filename)
+print("-------------------------------------------")
