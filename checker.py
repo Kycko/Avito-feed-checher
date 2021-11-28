@@ -9,7 +9,7 @@ def FUNC_exit_with_error(error_code):
     print("Exit...")
     sys.exit()
 def FUNC_read_file(filename):
-    file = open(filename, 'r', encoding='utf-8-sig')
+    file = open(filename, 'r', encoding='utf-8')
     data = file.readlines()
     file.close()
     return data
@@ -18,30 +18,9 @@ def FUNC_write_to_the_file(data, filename):
     file.writelines(data)
     file.close()
 
-
-def FUNC_find_substring(substring, string):
-    index = string.find(substring)
-    if index == -1:
-        return 0
-    else:
-        return index
-def FUNC_find_substring_return_after(substring, string, remove_newline):                # string, string, int(0/1)
-    index = FUNC_find_substring(substring, string)
-    if index:
-        cut_from = index+len(substring)
-        return string[cut_from:len(string)-1*remove_newline]
-    else:
-        return ""
-def FUNC_find_substring_return_before(substring, string):
-    index = FUNC_find_substring(substring, string)
-    if index:
-        return string[:index]
-    else:
-        return string
-
 # MAIN PROGRAM
 print("------------------------------")
-print("Prepare...")
+print("Checking args...")
 
 if len(sys.argv) == 1:
     FUNC_exit_with_error("PLEASE ADD A FILENAME")
@@ -49,27 +28,61 @@ for i in [1, 2]:
     if not OSpath.isfile(sys.argv[i]):
         FUNC_exit_with_error("NOT FOUND: "+sys.argv[i])
 
-print("Reading files...")
-FEED_original = FUNC_read_file(sys.argv[1])
+print("Preparing feed file...")
+TEMP = FUNC_read_file(sys.argv[1])
+FEED_original = []
+NEXTLINE = False
+
+for line in TEMP:
+    line = line[:-1].lower()            # отрезаем перенос строки и уменьшаем все буквы
+    if NEXTLINE:
+        if line[-1] == '"':
+            line = line[:-1]
+            NEXTLINE = False
+        FEED_original[-1] += line
+    elif line[0] == '"':
+        if line[-1] == '"':
+            line = line[:-1]
+        else:
+            NEXTLINE = True
+        FEED_original.append(line[1:])
+    else:
+        FEED_original.append(line)
+
+
 TEMP = FUNC_read_file(sys.argv[2])
 
-print("Making ID list...")
-ID_list = {}
-for string in TEMP:
-    index = string.rfind(",")
 
-    temp_key = string[:index].replace('""','"')
-    if temp_key[0] == '"':
-        temp_key = temp_key[1:]
-    if temp_key[len(temp_key)-1] == '"':
-        temp_key = temp_key[:len(temp_key)-1]
+for line in FEED_original:
+    print(line)
 
-    temp_value = string[index+1:len(string)-1]
-    ID_list[temp_key] = temp_value
+# print("Preparing ID list...")
+# ID_list = {}
+# for string in TEMP:
+#     index = string.rfind(",")
+#
+#     temp_key = string[:index].replace('""','"')
+#     if temp_key[0] == '"':
+#         temp_key = temp_key[1:]
+#     if temp_key[-1] == '"':
+#         temp_key = temp_key[:-1]
+#
+#     temp_value = string[index+1:-1]
+#     ID_list[temp_key] = temp_value
 
 
-for key in ID_list.keys():
-    print(ID_list[key] + " : " + key)
+# for index in range(len(FEED_original)):
+#     # for key in ID_list.keys():
+#     #     STR_FOUND = FUNC_find_substring(key, FEED_original[index])
+#     #     if STR_FOUND:
+#     #         print(FEED_original[index][:-1] + " || " + key + " || " + ID_list[key])
+#
+#
+#     string = FEED_original[index]
+#     STR_FOUND = string.find(substring)("Гайка", "Гайка")
+#     if STR_FOUND > -1:                                                                      # Если -1, значит, ничего не найдено.
+#         print(FEED_original[index][:-1] + " || " + "гайка" + " || " + ID_list["Гайка"])
+
 
 # temp = FUNC_find_substring_return_before(".txt", sys.argv[1])
 # NEW_filename = temp+" formatted.csv"
