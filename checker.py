@@ -28,7 +28,7 @@ for i in [1, 2]:
     if not OSpath.isfile(sys.argv[i]):
         FUNC_exit_with_error("NOT FOUND: "+sys.argv[i])
 
-print("Preparing feed file...")
+print("Preparing FEED file....", end="")
 TEMP = FUNC_read_file(sys.argv[1])
 FEED_original = []
 NEXTLINE = False
@@ -48,28 +48,30 @@ for line in TEMP:
         FEED_original.append(line[1:])
     else:
         FEED_original.append(line)
+print(str(len(FEED_original)) + " items")
 
 
+print("Preparing ID list......", end="")
 TEMP = FUNC_read_file(sys.argv[2])
+ID_list = {}
+
+for line in TEMP:
+    line = line.lower()                                 # уменьшаем все буквы
+    index = line.rfind(",")
+    temp_key = line[:index].replace('""','"')           # кавычки удваиваются при экспорте в .csv
+    if temp_key[0] == '"':
+        temp_key = temp_key[1:]
+    if temp_key[-1] == '"':
+        temp_key = temp_key[:-1]
+
+    temp_value = line[index+1:-1]
+    ID_list[temp_key] = temp_value
+print(str(len(ID_list)) + " items")
 
 
-for line in FEED_original:
-    print(line)
 
-# print("Preparing ID list...")
-# ID_list = {}
-# for string in TEMP:
-#     index = string.rfind(",")
-#
-#     temp_key = string[:index].replace('""','"')
-#     if temp_key[0] == '"':
-#         temp_key = temp_key[1:]
-#     if temp_key[-1] == '"':
-#         temp_key = temp_key[:-1]
-#
-#     temp_value = string[index+1:-1]
-#     ID_list[temp_key] = temp_value
-
+# for key in ID_list.keys():
+    # print(ID_list[key] + " || " + key)
 
 # for index in range(len(FEED_original)):
 #     # for key in ID_list.keys():
