@@ -1,4 +1,5 @@
 from os import path as OSpath
+# import win32clipboard
 import sys
 
 # functions
@@ -33,6 +34,7 @@ FEED_original = []
 NEXTLINE = False
 
 for line in TEMP:
+    # print(line)                       # for DEBUG
     line = line[:-1].lower()            # отрезаем перенос строки и уменьшаем все буквы
     if NEXTLINE:
         if line[-1] == '"':
@@ -41,10 +43,13 @@ for line in TEMP:
         FEED_original[-1] += line
     elif line[0] == '"':
         if line[-1] == '"':
-            line = line[:-1]
+            FEED_original.append(line[1:-1])
         else:
-            NEXTLINE = True
-        FEED_original.append(line[1:])
+            if line.count('"') % 2:
+                NEXTLINE = True
+                FEED_original.append(line[1:])
+            else:
+                FEED_original.append(line)
     else:
         FEED_original.append(line)
 print(str(len(FEED_original)) + " items")
@@ -67,6 +72,7 @@ for line in TEMP:
     ID_list[temp_key] = temp_value
 print(str(len(ID_list)) + " items")
 
+# print(FEED_original[1000])                             # for DEBUG
 input("Press ENTER to continue...")
 
 
@@ -96,6 +102,11 @@ for index in range(len(FEED_original)):
 # finalizing
 final_filename   = "KEYS FOR " + sys.argv[1][2:]
 final_percentage = 100*FOUND_IDs_counter/len(FEED_original)
+
+# win32clipboard.OpenClipboard()
+# win32clipboard.EmptyClipboard()
+# win32clipboard.SetClipboardText(FINAL_ID_list)
+# win32clipboard.CloseClipboard()
 
 print()                                                                             # перевод на новую строку в конце программы
 print("Writing to the file...")
