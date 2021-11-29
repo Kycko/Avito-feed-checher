@@ -42,7 +42,7 @@ for line in TEMP:
             NEXTLINE = False
         FEED_original[-1] += line
     elif line[0] == '"':
-        if line[-1] == '"':
+        if line[-1] == '"' and len(line) > 1:
             FEED_original.append(line[1:-1])
         else:
             if line.count('"') % 2:
@@ -53,6 +53,9 @@ for line in TEMP:
     else:
         FEED_original.append(line)
 print(str(len(FEED_original)) + " items")
+
+# for line in FEED_original:            # for DEBUG
+# print(FEED_original)                  # for DEBUG
 
 
 print("Preparing ID list...............", end="")
