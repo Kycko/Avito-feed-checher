@@ -1,5 +1,5 @@
 from os import path as OSpath
-# import win32clipboard
+import win32clipboard
 import sys
 
 # functions
@@ -98,25 +98,30 @@ for index in range(len(FEED_original)):
     else:
         FINAL_ID_list.append("\n")
 
+# making a text for clipboard
+FINAL_ID_text = ""
+for line in FINAL_ID_list:
+    FINAL_ID_text += line
 
-# finalizing
+# FINALIZING
 final_filename   = "KEYS FOR " + sys.argv[1][2:]
 final_percentage = 100*FOUND_IDs_counter/len(FEED_original)
 
-# win32clipboard.OpenClipboard()
-# win32clipboard.EmptyClipboard()
-# win32clipboard.SetClipboardText(FINAL_ID_list)
-# win32clipboard.CloseClipboard()
+# copy to clipboard
+win32clipboard.OpenClipboard()
+win32clipboard.EmptyClipboard()
+win32clipboard.SetClipboardText(FINAL_ID_text)
+win32clipboard.CloseClipboard()
 
 print()                                                                             # перевод на новую строку в конце программы
 print("Writing to the file...")
 print()
 FUNC_write_to_the_file(FINAL_ID_list, final_filename)
-print("-------------------------------------------")
+print("----------------------------------------------------------")
 print("DONE!")
 print("Found IDs:......................" + str(FOUND_IDs_counter), end=" ")
 print("(" + str(final_percentage)[:4] + "%)")
 print()
-print("Your IDs was written to this file:")
+print("Your IDs was copied to clipboard and written to this file:")
 print("   " + final_filename)
-print("-------------------------------------------")
+print("----------------------------------------------------------")
