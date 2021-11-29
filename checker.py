@@ -34,8 +34,10 @@ FEED_original = []
 NEXTLINE = False
 
 for line in TEMP:
-    # print(line)                       # for DEBUG
-    line = line[:-1].lower()            # отрезаем перенос строки и уменьшаем все буквы
+    # print(line)                           # for DEBUG
+    line = line.lower()                     # уменьшаем все буквы
+    if line[-1] == "\n":                    # отрезаем перенос строки
+        line = line[:-1]
     if NEXTLINE:
         if line[-1] == '"':
             line = line[:-1]
@@ -52,10 +54,12 @@ for line in TEMP:
                 FEED_original.append(line)
     else:
         FEED_original.append(line)
+    # print(line)                           # for DEBUG
+    # print()                               # for DEBUG
 print(str(len(FEED_original)) + " items")
 
-# for line in FEED_original:            # for DEBUG
-# print(FEED_original)                  # for DEBUG
+# for line in FEED_original:                # for DEBUG
+#     print(line)                           # for DEBUG
 
 
 print("Preparing ID list...............", end="")
@@ -63,6 +67,7 @@ TEMP = FUNC_read_file(sys.argv[2])
 ID_list = {}
 
 for line in TEMP:
+    # print(line)                                       # for DEBUG
     line = line.lower()                                 # уменьшаем все буквы
     index = line.rfind(",")
     temp_key = line[:index].replace('""','"')           # кавычки удваиваются при экспорте в .csv
@@ -70,9 +75,15 @@ for line in TEMP:
         temp_key = temp_key[1:]
     if temp_key[-1] == '"':
         temp_key = temp_key[:-1]
+    if line[-1] == "\n":
+        line = line[:-1]
 
-    temp_value = line[index+1:-1]
+    temp_value = line[index+1:]
     ID_list[temp_key] = temp_value
+
+    # print(temp_key + " || " + ID_list[temp_key])      # for DEBUG
+    # print()                                           # for DEBUG
+
 print(str(len(ID_list)) + " items")
 
 # print(FEED_original[1000])                             # for DEBUG
