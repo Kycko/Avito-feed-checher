@@ -1,35 +1,19 @@
+import main_lib as LIB
 from os import path as OSpath
-import win32clipboard
 import sys
-
-# functions
-def FUNC_exit_with_error(error_code):
-    print()
-    print("------------------------------")
-    print(error_code)
-    print("Exit...")
-    sys.exit()
-def FUNC_read_file(filename):
-    file = open(filename, 'r', encoding='utf-8')
-    data = file.readlines()
-    file.close()
-    return data
-def FUNC_write_to_the_file(data, filename):
-    file = open(filename, 'w', encoding='utf-8')
-    file.writelines(data)
-    file.close()
+import win32clipboard
 
 # MAIN PROGRAM
 print("Checking args...")
 
-if len(sys.argv) == 1:
-    FUNC_exit_with_error("PLEASE ADD A FILENAME")
+if len(sys.argv) < 3:
+    LIB.FUNC_exit_with_error("PLEASE ADD A FILENAME")
 for i in [1, 2]:
     if not OSpath.isfile(sys.argv[i]):
-        FUNC_exit_with_error("NOT FOUND: "+sys.argv[i])
+        LIB.FUNC_exit_with_error("NOT FOUND: "+sys.argv[i])
 
 print("Preparing FEED file.............", end="")
-TEMP = FUNC_read_file(sys.argv[1])
+TEMP = LIB.FUNC_read_file(sys.argv[1])
 FEED_original = []
 NEXTLINE = False
 
@@ -63,7 +47,7 @@ print(str(len(FEED_original)) + " items")
 
 
 print("Preparing ID list...............", end="")
-TEMP = FUNC_read_file(sys.argv[2])
+TEMP = LIB.FUNC_read_file(sys.argv[2])
 ID_list = {}
 
 for line in TEMP:
@@ -130,7 +114,7 @@ win32clipboard.CloseClipboard()
 print()                                                                             # перевод на новую строку в конце программы
 print("Writing to the file...")
 print()
-FUNC_write_to_the_file(FINAL_ID_list, final_filename)
+LIB.FUNC_write_to_the_file(FINAL_ID_list, final_filename)
 print("----------------------------------------------------------")
 print("DONE!")
 print("Found IDs:......................" + str(FOUND_IDs_counter), end=" ")
