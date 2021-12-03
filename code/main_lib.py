@@ -29,13 +29,13 @@ def check_file_extention(file):
 def button_1_clicked():
     global file_1
     file_1 = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
-    file_choose_clicked_set_label(lbl_1, file_1)
+    file_choose_clicked(lbl_1, file_1)
 def button_2_clicked():
     global file_2
     file_2 = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
-    file_choose_clicked_set_label(lbl_2, file_2)
-def file_choose_clicked_set_label(lbl, file):
-    lbl.config(text=OSpath.basename(file))
+    file_choose_clicked(lbl_2, file_2)
+def file_choose_clicked(lbl, file):
+    lbl.config(text=OSpath.basename(file)[:40])
     good_ext = check_file_extention(file)
     if good_ext:
         lbl.config(foreground=COLOUR_green)
