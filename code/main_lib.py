@@ -72,6 +72,42 @@ def file_choose_clicked(lbl, file):
         else:
             lbl.config(foreground=COLOUR_red)
         lbl.config(text=text)
+def button_count_feed_clicked():
+    TEMP = clients_feed_list.get("1.0", END)
+    TEMP = list(TEMP.split("\n"))
+    print(TEMP)                               # for DEBUG
+    FEED_original = []
+    NEXTLINE = False
+
+    for line in TEMP:
+        # print(line)                           # for DEBUG
+        line = line.lower()                     # уменьшаем все буквы
+        # print('"' + line + '"')               # for DEBUG
+        if line:
+            if NEXTLINE:
+                if line[-1] == '"':
+                    line = line[:-1]
+                    NEXTLINE = False
+                FEED_original[-1] += line
+            elif line[0] == '"':
+                if line[-1] == '"' and len(line) > 1:
+                    FEED_original.append(line[1:-1])
+                else:
+                    if line.count('"') % 2:
+                        NEXTLINE = True
+                        FEED_original.append(line[1:])
+                    else:
+                        FEED_original.append(line)
+            else:
+                FEED_original.append(line)
+
+    length = len(FEED_original)
+    text = str(length) + " " + FUNC_plural_word_endings(length)
+    lbl_feed_counter.config(text=text)
+    if length:
+        lbl_feed_counter.config(foreground=COLOUR_green)
+    else:
+        lbl_feed_counter.config(foreground=COLOUR_red)
 
 # Making GUI
 def FUNC_GUI_init():
@@ -83,35 +119,44 @@ def FUNC_GUI_init():
     # First button group
     global lbl_1
     button_1 = Button(window, text="Выбрать список названий с Type ID", command=button_1_clicked, padx=10, pady=3, height = 1, width = 33)
-    button_1.grid(column=0, row=0, pady=15, sticky=E)
-    lbl_1 = Label(window, text=lbl_1_2_init_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
-    lbl_1.grid(column=1, row=0, sticky=W)
+    button_1.grid(column=0, row=0, columnspan=2, padx=7, pady=15, sticky=E)
+    lbl_1 = Label(window, text=lbl_1_2_init_text, foreground=COLOUR_red, padx=12, pady=5, width=47, anchor='w', relief=GROOVE)
+    lbl_1.grid(column=2, row=0, columnspan=2, padx=15, sticky=W)
 
     # Second button group
     global lbl_2
     button_2 = Button(window, text="Выбрать список OEM-номеров с Type ID", command=button_2_clicked, padx=10, pady=3, height = 1, width = 33)
-    button_2.grid(column=0, row=1, sticky=E)
-    lbl_2 = Label(window, text=lbl_1_2_init_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
-    lbl_2.grid(column=1, row=1, sticky=W)
+    button_2.grid(column=0, row=1, columnspan=2, padx=7, sticky=E)
+    lbl_2 = Label(window, text=lbl_1_2_init_text, foreground=COLOUR_red, padx=12, pady=5, width=47, anchor='w', relief=GROOVE)
+    lbl_2.grid(column=2, row=1, columnspan=2, padx=15, sticky=W)
 
     # Hint text (label) for client's feed
     text = ""
-    for i in range(130):
+    for i in range(129):
         text += "-"
     text += """
     ↓ Вставьте в поле ниже список наименований из фида клиента. Желательно удалить все лишние строки снизу. ↓"""
 
     lbl_feed_hint = Label(window, text=text, justify=LEFT, anchor='w')
-    lbl_feed_hint.grid(column=0, row=2, columnspan=2, padx=5, sticky=W)
+    lbl_feed_hint.grid(column=0, row=2, columnspan=4, padx=5, pady=5, sticky=W)
 
     # Text field for client's feed
-    clients_feed_list = scrolledtext.ScrolledText(window, width=80, height=30)
-    clients_feed_list.grid(column=0, row=3, columnspan=2, padx=5, pady=7)
+    global clients_feed_list
+    clients_feed_list = scrolledtext.ScrolledText(window, width=80, height=25)
+    clients_feed_list.grid(column=0, row=3, columnspan=4, padx=5, pady=7)
+
+    #Final buttons (count feed's strings + start main processing)
+    global lbl_feed_counter
+    button_count_feed = Button(window, text="Посчитать строки", command=button_count_feed_clicked, padx=10, pady=3, height=2)
+    button_count_feed.grid(column=0, row=4, padx=10, pady=10)
+    lbl_feed_counter = Label(window, text="0 строк", foreground=COLOUR_red, padx=12, pady=12, width=25, relief=GROOVE)
+    lbl_feed_counter.grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=W)
+
     return window
 
 # Global vars
 app_width = 700
-app_height = 700
+app_height = 670
 window_title = "Avito feed checker (запчасти)"
 
 # Colours
