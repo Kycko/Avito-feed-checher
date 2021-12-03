@@ -93,9 +93,19 @@ def FUNC_GUI_init():
     lbl_2 = Label(window, text=lbl_1_2_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
     lbl_2.grid(column=1, row=1, sticky=W)
 
+    # Hint text (label) for client's feed
+    text = ""
+    for i in range(130):
+        text += "-"
+    text += """
+    ↓ Вставьте в поле ниже список наименований из фида клиента. Желательно удалить все лишние строки снизу. ↓"""
+
+    lbl_feed_hint = Label(window, text=text, justify=LEFT, anchor='w')
+    lbl_feed_hint.grid(column=0, row=2, columnspan=2, padx=5, sticky=W)
+
     # Text field for client's feed
     clients_feed_list = scrolledtext.ScrolledText(window, width=80, height=30)
-    clients_feed_list.grid(column=0, row=2, columnspan=2, padx=5, pady=20)
+    clients_feed_list.grid(column=0, row=3, columnspan=2, padx=5, pady=7)
     return window
 
 # Global vars
