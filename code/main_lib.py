@@ -63,14 +63,15 @@ def button_2_clicked():
     file_2 = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
     file_choose_clicked(lbl_2, file_2)
 def file_choose_clicked(lbl, file):
-    items_count = FUNC_prepare_ID_list(file)
-    text = "[" + str(items_count) + " " + FUNC_plural_word_endings(items_count) + "] " + OSpath.basename(file)[:40]
-    lbl.config(text=text)
-    good_ext = check_file_extention(file)
-    if good_ext:
-        lbl.config(foreground=COLOUR_green)
-    else:
-        lbl.config(foreground=COLOUR_red)
+    if file:
+        text = OSpath.basename(file)[:40]
+        if check_file_extention(file):
+            lbl.config(foreground=COLOUR_green)
+            items_count = FUNC_prepare_ID_list(file)
+            text = "[" + str(items_count) + " " + FUNC_plural_word_endings(items_count) + "] " + text
+        else:
+            lbl.config(foreground=COLOUR_red)
+        lbl.config(text=text)
 
 # Making GUI
 def FUNC_GUI_init():
@@ -83,14 +84,14 @@ def FUNC_GUI_init():
     global lbl_1
     button_1 = Button(window, text="Выбрать список названий с Type ID", command=button_1_clicked, padx=10, pady=3, height = 1, width = 33)
     button_1.grid(column=0, row=0, pady=15, sticky=E)
-    lbl_1 = Label(window, text=lbl_1_2_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
+    lbl_1 = Label(window, text=lbl_1_2_init_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
     lbl_1.grid(column=1, row=0, sticky=W)
 
     # Second button group
     global lbl_2
     button_2 = Button(window, text="Выбрать список OEM-номеров с Type ID", command=button_2_clicked, padx=10, pady=3, height = 1, width = 33)
     button_2.grid(column=0, row=1, sticky=E)
-    lbl_2 = Label(window, text=lbl_1_2_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
+    lbl_2 = Label(window, text=lbl_1_2_init_text, foreground=COLOUR_red, padx=22, pady=10, width=50, anchor='w')
     lbl_2.grid(column=1, row=1, sticky=W)
 
     # Hint text (label) for client's feed
@@ -118,4 +119,4 @@ COLOUR_red = "#D73B41"
 COLOUR_green ="#14963A"
 
 # Label vars
-lbl_1_2_text = "Не выбрано"
+lbl_1_2_init_text = "Не выбрано"
