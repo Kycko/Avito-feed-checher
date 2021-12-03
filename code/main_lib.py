@@ -20,10 +20,38 @@ def FUNC_write_to_the_file(data, filename):
     file = open(filename, 'w', encoding='utf-8')
     file.writelines(data)
     file.close()
+def FUNC_plural_word_endings(num):
+    words = ['строка', 'строки', 'строк']
 
-# Some checking functions
+    if all((num % 10 == 1, num % 100 != 11)):
+        return words[0]
+    elif all((2 <= num % 10 <= 4,
+              any((num % 100 < 10, num % 100 >= 20)))):
+        return words[1]
+    return words[2]
+
+# Some specific functions
 def check_file_extention(file):
     return file[-4:] in (".csv", ".txt")
+def FUNC_prepare_ID_list(file):
+    TEMP = FUNC_read_file(file)
+    ID_list = {}
+
+    for line in TEMP:
+        # print(line)                                       # for DEBUG
+        line = line.lower()                                 # уменьшаем все буквы
+        index = line.rfind(",")
+        temp_key = line[:index].replace('""','"')           # кавычки удваиваются при экспорте в .csv
+        if temp_key[0] == '"':
+            temp_key = temp_key[1:]
+        if temp_key[-1] == '"':
+            temp_key = temp_key[:-1]
+        if line[-1] == "\n":
+            line = line[:-1]
+
+        temp_value = line[index+1:]
+        ID_list[temp_key] = temp_value
+    return len(ID_list)
 
 # Button actions
 def button_1_clicked():
@@ -35,7 +63,9 @@ def button_2_clicked():
     file_2 = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
     file_choose_clicked(lbl_2, file_2)
 def file_choose_clicked(lbl, file):
-    lbl.config(text=OSpath.basename(file)[:40])
+    items_count = FUNC_prepare_ID_list(file)
+    text = "[" + str(items_count) + " " + FUNC_plural_word_endings(items_count) + "] " + OSpath.basename(file)[:40]
+    lbl.config(text=text)
     good_ext = check_file_extention(file)
     if good_ext:
         lbl.config(foreground=COLOUR_green)
