@@ -2,6 +2,7 @@ from os import path as OSpath
 from sys import exit as SYSexit
 from tkinter import *
 from tkinter import filedialog
+import tkinter.font as TKfont
 from tkinter import scrolledtext
 
 # Basic functions
@@ -148,15 +149,18 @@ def FUNC_GUI_init():
     #Final buttons (count feed's strings + start main processing)
     global lbl_feed_counter
     button_count_feed = Button(window, text="Посчитать строки", command=button_count_feed_clicked, padx=10, pady=3, height=2)
-    button_count_feed.grid(column=0, row=4, padx=10, pady=10)
+    button_count_feed.grid(column=0, row=4, padx=10, pady=10, sticky=N)
     lbl_feed_counter = Label(window, text="0 строк", foreground=COLOUR_red, padx=12, pady=12, width=25, relief=GROOVE)
-    lbl_feed_counter.grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=W)
+    lbl_feed_counter.grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=NW)
+
+    button_MAIN_START = Button(window, text="ЗАПУСТИТЬ\n»»»", font=TKfont.Font(family='Arial', size=13), command=button_count_feed_clicked, padx=10, pady=3, height=5)
+    button_MAIN_START.grid(column=3, row=4, padx=10, pady=10, sticky=E)
 
     return window
 
 # Global vars
-app_width = 700
-app_height = 670
+app_width = 670
+app_height = 685
 window_title = "Avito feed checker (запчасти)"
 
 # Colours
