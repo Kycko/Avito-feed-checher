@@ -1,4 +1,4 @@
-import main_lib as LIB
+from gui_lib import APP
 
-APP = LIB.APP()
+APP = APP()
 APP.mainloop()
