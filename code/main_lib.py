@@ -35,7 +35,17 @@ def FUNC_plural_word_endings(num):
 def check_file_extention(file):
     return file[-4:] in (".csv", ".txt")
 def FUNC_check_main_start_state():
-    return 0
+    print(len(FEED_original))
+    print(len(FILE1_LIST))
+    print(len(FILE2_LIST))
+    print(bool(len(FEED_original) and (len(FILE1_LIST) or len(FILE2_LIST))))
+    print()
+    if len(FEED_original) and (len(FILE1_LIST) or len(FILE2_LIST)):
+        button_MAIN_START["state"] = "normal"
+        button_MAIN_START["text"] = "ЗАПУСТИТЬ\n»»»"
+    else:
+        button_MAIN_START["state"] = "disabled"
+        button_MAIN_START["text"] = "ЗАПУСТИТЬ\nxxx"
 def FUNC_prepare_ID_list(file):
     TEMP = FUNC_read_file(file)
     ID_list = {}
@@ -54,23 +64,24 @@ def FUNC_prepare_ID_list(file):
 
         temp_value = line[index+1:]
         ID_list[temp_key] = temp_value
-    return len(ID_list)
+    return ID_list
 
 # Button actions
 def button_1_clicked():
-    global file_1
+    global file_1, FILE1_LIST
     file_1 = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
-    file_choose_clicked(lbl_1, file_1)
+    file_choose_clicked(lbl_1, file_1, FILE1_LIST)
 def button_2_clicked():
-    global file_2
+    global file_2, FILE2_LIST
     file_2 = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
-    file_choose_clicked(lbl_2, file_2)
-def file_choose_clicked(lbl, file):
+    file_choose_clicked(lbl_2, file_2, FILE2_LIST)
+def file_choose_clicked(lbl, file, final_list_var):
     if file:
         text = OSpath.basename(file)[:40]
         if check_file_extention(file):
             lbl.config(foreground=COLOUR_green)
-            items_count = FUNC_prepare_ID_list(file)
+            final_list_var = FUNC_prepare_ID_list(file)
+            items_count = len(final_list_var)
             text = "[" + str(items_count) + " " + FUNC_plural_word_endings(items_count) + "] " + text
         else:
             lbl.config(foreground=COLOUR_red)
@@ -152,17 +163,17 @@ def FUNC_GUI_init():
     clients_feed_list.grid(column=0, row=3, columnspan=4, padx=5, pady=7)
 
     #Final buttons (count feed's strings + start main processing)
-    global lbl_feed_counter
+    global lbl_feed_counter, button_MAIN_START
     button_count_feed = Button(window, text="Посчитать строки", command=button_count_feed_clicked, padx=10, pady=3, height=2)
     button_count_feed.grid(column=0, row=4, padx=10, pady=10, sticky=N)
     lbl_feed_counter = Label(window, text="0 строк", foreground=COLOUR_red, padx=12, pady=12, width=25, relief=GROOVE)
     lbl_feed_counter.grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=NW)
 
-    text="ЗАПУСТИТЬ\nxxx"
     font=TKfont.Font(family='Arial', size=13)
-    button_MAIN_START = Button(window, state="disabled", text=text, font=font, command=button_count_feed_clicked, padx=10, pady=3, height=5)
+    button_MAIN_START = Button(window, font=font, command=button_count_feed_clicked, padx=10, pady=3, height=5)
     button_MAIN_START.grid(column=3, row=4, padx=10, pady=10, sticky=E)
 
+    FUNC_check_main_start_state()
     return window
 
 # Global vars
@@ -176,3 +187,10 @@ COLOUR_green ="#14963A"
 
 # Label vars
 lbl_1_2_init_text = "Не выбрано"
+
+# Main prog vars
+FEED_original = []
+file_1 = None
+FILE1_LIST = {}
+file_2 = None
+FILE2_LIST = {}
