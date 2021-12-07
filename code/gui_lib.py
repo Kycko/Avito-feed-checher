@@ -14,8 +14,9 @@ class APP(tk.Tk):
         self.files   = ['', '']                                         # only the path to each file
         self.IDlists = [{}, {}]                                         # ID lists as a reference to check
 
-        self.buttons = {}                                               # all the buttons of the app
-        for i in range(2):                                              # buttons for files choosing
+        # Buttons for files choosing
+        self.buttons = {}
+        for i in range(2):
             self.buttons['btn'+str(i)] = tk.Button(self, padx=10, pady=3, height=1, width=33)
             self.buttons['btn'+str(i)].grid(column=0, row=i, columnspan=2, padx=7, pady=15-(i*15), sticky=tk.E)
         self.buttons['btn0']['text']    = 'Выбрать список названий с Type ID'
@@ -23,8 +24,9 @@ class APP(tk.Tk):
         self.buttons['btn0']['command'] = self.btn0_clicked
         self.buttons['btn1']['command'] = self.btn1_clicked
 
-        self.labels = {}                                                # all the labels of the app
-        for i in range(2):                                              # labels for files choosing
+        # Labels for files choosing
+        self.labels = {}
+        for i in range(2):
             self.labels['lbl'+str(i)] = {'num'      : i,
                                          'obj'      : tk.Label(self,
                                                                padx=12,
@@ -36,7 +38,8 @@ class APP(tk.Tk):
                                                                relief=tk.GROOVE)}
             self.labels['lbl'+str(i)]['obj'].grid(column=2, row=i, columnspan=2, padx=15, sticky=tk.W)
 
-        text = ''                                                       # hint text (label) for client's feed
+        # Hint text (label) for client's feed
+        text = ''
         for i in range(129):
             text += '-'
         text += """
