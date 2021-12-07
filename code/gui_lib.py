@@ -120,11 +120,15 @@ class APP(tk.Tk):
                                                   foreground = Globals.COLORS[color])
         self.check_main_start_state()
     def check_main_start_state(self):
-        if self.FEED_original['ready'] and (self.IDlists[0]['ready'] or self.IDlists[1]['ready']):
+        if self.ready_for_MAIN_START_condition():
             self.buttons['MAIN_START']["state"] = "normal"
             self.buttons['MAIN_START']["text"] = "ЗАПУСТИТЬ\n»»»"
         else:
             self.buttons['MAIN_START']["state"] = "disabled"
             self.buttons['MAIN_START']["text"] = "ЗАПУСТИТЬ\nxxx"
+    def ready_for_MAIN_START_condition(self):
+        return self.FEED_original['ready'] and (self.IDlists[0]['ready'] or self.IDlists[1]['ready'])
     def MAIN_START_clicked(self):
-        print('MAIN_START_clicked')
+        self.count_feed_clicked()
+        if self.ready_for_MAIN_START_condition():
+            print('GOOOOOOOOOO!!!!!!!!!!!11')

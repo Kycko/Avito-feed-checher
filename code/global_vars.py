@@ -1,5 +1,5 @@
 # App version and main window properties
-VERSION = 'v.036'
+VERSION = 'v.037'
 app_width  = 670
 app_height = 685
 app_title  = 'Avito feed checker (запчасти) ' + VERSION
