@@ -1,4 +1,5 @@
 import global_vars as Globals
+import main_functions_lib as FUNC
 import tkinter as tk
 from os import path as OSpath
 from tkinter import filedialog
@@ -11,7 +12,7 @@ class APP(tk.Tk):
         self.resizable(0,0)                                             # makes the app window unresizable
 
         self.files   = ['', '']                                         # only the path to each file
-        self.IDlists = ['', '']                                         # ID lists as a reference to check
+        self.IDlists = [{}, {}]                                         # ID lists as a reference to check
 
         self.buttons = {}                                               # all the buttons of the app
         for i in range(2):
@@ -25,7 +26,6 @@ class APP(tk.Tk):
         self.labels = {}                                                # all the labels of the app
         for i in range(2):
             self.labels['lbl'+str(i)] = {'num'      : i,
-                                         'ready'    : False,            # it means "ready to start main processing"
                                          'obj'      : tk.Label(self,
                                                                padx=12,
                                                                pady=5,
@@ -46,10 +46,17 @@ class APP(tk.Tk):
             text = OSpath.basename(self.files[num])[:40]
             if self.files[num][-4:] in (".csv", ".txt"):
                 color = Globals.COLORS['green']
-                # final_list_var = FUNC_prepare_ID_list(file)   # to be done later
-                # items_count = len(final_list_var)             # to be done later
-                # text = "[" + str(items_count) + " " + FUNC_plural_word_endings(items_count) + "] " + text
+                self.IDlists[num]['obj']   = FUNC.prepare_ID_list(self.files[num])
+                self.IDlists[num]['count'] = len(self.IDlists[num]['obj'])
+                self.IDlists[num]['ready'] = True           # it means "ready to start main processing"
+                text = ''.join(['[',
+                                str(self.IDlists[num]['count']),
+                                ' ',
+                                FUNC.plural_word_endings(self.IDlists[num]['count']),
+                                '] ',
+                                text])
             else:
                 color = Globals.COLORS['red']
+                self.IDlists[num]['ready'] = False
             self.labels['lbl'+str(num)]['obj'].config(foreground=color, text=text)
         # FUNC_check_main_start_state()                         # to be done later
