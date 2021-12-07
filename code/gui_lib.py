@@ -4,17 +4,19 @@ import tkinter as tk
 from os import path as OSpath
 from tkinter import filedialog
 from tkinter import scrolledtext
+import tkinter.font as TKfont
 
 class APP(tk.Tk):
     def __init__(self):
         super().__init__()
         self.geometry(str(Globals.app_width) + "x" + str(Globals.app_height))
         self.title(Globals.app_title)
-        self.resizable(0,0)                                             # makes the app window unresizable
+        self.resizable(0,0)                                                 # makes the app window unresizable
 
-        self.files         = ['', '']                                   # only the path to each file
-        self.IDlists       = [{}, {}]                                   # ID lists as a reference to check
-        self.FEED_original = {}                                         # Client's feed names list
+        self.files        = ['', '']                                        # only the path to each file
+        self.IDlists      = [{'obj' : '', 'count' : 0, 'ready' : False},
+                             {'obj' : '', 'count' : 0, 'ready' : False}]    # ID lists as a reference to check
+        self.FEED_original = {'obj' : '', 'count' : 0, 'ready' : False}     # Client's feed names list
 
         # Buttons for files choosing
         self.buttons = {}
@@ -54,6 +56,15 @@ class APP(tk.Tk):
         self.clients_feed_list = scrolledtext.ScrolledText(self, width=80, height=25)
         self.clients_feed_list.grid(column=0, row=3, columnspan=4, padx=5, pady=7)
 
+        # Start main processing button
+        self.buttons['MAIN_START'] = tk.Button(self,
+                                               font=TKfont.Font(family='Arial', size=13),
+                                               command=self.MAIN_START_clicked,
+                                               padx=10,
+                                               pady=3,
+                                               height=5)
+        self.buttons['MAIN_START'].grid(column=3, row=4, padx=10, pady=10, sticky=tk.E)
+
         # Button & label for client's feed strings counter
         self.buttons['count_feed'] = tk.Button(self,
                                                text="Посчитать строки",
@@ -69,8 +80,8 @@ class APP(tk.Tk):
                                                       pady=12,
                                                       width=25,
                                                       relief=tk.GROOVE)
-        self.count_feed_clicked()
         self.labels['feed_counter']['obj'].grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=tk.NW)
+        self.count_feed_clicked()
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
         self.file_choose_clicked(0)
@@ -102,7 +113,6 @@ class APP(tk.Tk):
         self.FEED_original['obj']   = FUNC.prepare_FEED_original(TEMP)
         self.FEED_original['count'] = len(self.FEED_original['obj'])
         self.FEED_original['ready'] = bool(self.FEED_original['count'])
-        print(self.FEED_original['ready'])
 
         text = str(self.FEED_original['count']) + ' ' + FUNC.plural_word_endings(self.FEED_original['count'])
         color = ('red', 'green')[self.FEED_original['ready']]
@@ -110,4 +120,11 @@ class APP(tk.Tk):
                                                   foreground = Globals.COLORS[color])
         self.check_main_start_state()
     def check_main_start_state(self):
-        print('checking main start button state...')
+        if self.FEED_original['ready'] and (self.IDlists[0]['ready'] or self.IDlists[1]['ready']):
+            self.buttons['MAIN_START']["state"] = "normal"
+            self.buttons['MAIN_START']["text"] = "ЗАПУСТИТЬ\n»»»"
+        else:
+            self.buttons['MAIN_START']["state"] = "disabled"
+            self.buttons['MAIN_START']["text"] = "ЗАПУСТИТЬ\nxxx"
+    def MAIN_START_clicked(self):
+        print('MAIN_START_clicked')
