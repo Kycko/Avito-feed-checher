@@ -3,6 +3,7 @@ import main_functions_lib as FUNC
 import tkinter as tk
 from os import path as OSpath
 from tkinter import filedialog
+from tkinter import scrolledtext
 
 class APP(tk.Tk):
     def __init__(self):
@@ -47,6 +48,10 @@ class APP(tk.Tk):
         self.labels['feed_hint'] = {}
         self.labels['feed_hint']['obj'] = tk.Label(self, text=text, justify=tk.LEFT, anchor='w')
         self.labels['feed_hint']['obj'].grid(column=0, row=2, columnspan=4, padx=5, pady=5, sticky=tk.W)
+
+        # Text field for client's feed
+        self.clients_feed_list = scrolledtext.ScrolledText(self, width=80, height=25)
+        self.clients_feed_list.grid(column=0, row=3, columnspan=4, padx=5, pady=7)
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
         self.file_choose_clicked(0)
