@@ -15,7 +15,7 @@ class APP(tk.Tk):
         self.IDlists = [{}, {}]                                         # ID lists as a reference to check
 
         self.buttons = {}                                               # all the buttons of the app
-        for i in range(2):
+        for i in range(2):                                              # buttons for files choosing
             self.buttons['btn'+str(i)] = tk.Button(self, padx=10, pady=3, height=1, width=33)
             self.buttons['btn'+str(i)].grid(column=0, row=i, columnspan=2, padx=7, pady=15-(i*15), sticky=tk.E)
         self.buttons['btn0']['text']    = 'Выбрать список названий с Type ID'
@@ -24,7 +24,7 @@ class APP(tk.Tk):
         self.buttons['btn1']['command'] = self.btn1_clicked
 
         self.labels = {}                                                # all the labels of the app
-        for i in range(2):
+        for i in range(2):                                              # labels for files choosing
             self.labels['lbl'+str(i)] = {'num'      : i,
                                          'obj'      : tk.Label(self,
                                                                padx=12,
@@ -35,6 +35,15 @@ class APP(tk.Tk):
                                                                anchor='w',
                                                                relief=tk.GROOVE)}
             self.labels['lbl'+str(i)]['obj'].grid(column=2, row=i, columnspan=2, padx=15, sticky=tk.W)
+
+        text = ''                                                       # hint text (label) for client's feed
+        for i in range(129):
+            text += '-'
+        text += """
+↓ Вставьте в поле ниже список наименований из фида клиента. Желательно удалить все лишние строки снизу. ↓"""
+        self.labels['feed_hint'] = {}
+        self.labels['feed_hint']['obj'] = tk.Label(self, text=text, justify=tk.LEFT, anchor='w')
+        self.labels['feed_hint']['obj'].grid(column=0, row=2, columnspan=4, padx=5, pady=5, sticky=tk.W)
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
         self.file_choose_clicked(0)
