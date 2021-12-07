@@ -8,12 +8,12 @@ class APP(tk.Tk):
         super().__init__()
         self.geometry(str(Globals.app_width) + "x" + str(Globals.app_height))
         self.title(Globals.app_title)
-        self.resizable(0,0)                                     # makes the app window unresizable
+        self.resizable(0,0)                                             # makes the app window unresizable
 
-        self.files   = ['', '']                                 # only the path to each file
-        self.IDlists = ['', '']                                 # ID lists as a reference to check
+        self.files   = ['', '']                                         # only the path to each file
+        self.IDlists = ['', '']                                         # ID lists as a reference to check
 
-        self.buttons = {}                                       # all the buttons of the app
+        self.buttons = {}                                               # all the buttons of the app
         for i in range(2):
             self.buttons['btn'+str(i)] = tk.Button(self, padx=10, pady=3, height=1, width=33)
             self.buttons['btn'+str(i)].grid(column=0, row=i, columnspan=2, padx=7, pady=15-(i*15), sticky=tk.E)
@@ -22,11 +22,18 @@ class APP(tk.Tk):
         self.buttons['btn0']['command'] = self.btn0_clicked
         self.buttons['btn1']['command'] = self.btn1_clicked
 
-        self.labels = {}                                        # all the labels of the app
+        self.labels = {}                                                # all the labels of the app
         for i in range(2):
             self.labels['lbl'+str(i)] = {'num'      : i,
-                                         'ready'    : False}    # it means "ready to start main processing"
-            self.labels['lbl'+str(i)]['obj'] = tk.Label(self, padx=12, pady=5, width=47, anchor='w', relief=tk.GROOVE)
+                                         'ready'    : False,            # it means "ready to start main processing"
+                                         'obj'      : tk.Label(self,
+                                                               padx=12,
+                                                               pady=5,
+                                                               width=47,
+                                                               text='Не выбрано',
+                                                               foreground=Globals.COLORS['red'],
+                                                               anchor='w',
+                                                               relief=tk.GROOVE)}
             self.labels['lbl'+str(i)]['obj'].grid(column=2, row=i, columnspan=2, padx=15, sticky=tk.W)
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
