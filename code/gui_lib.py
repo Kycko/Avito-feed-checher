@@ -12,8 +12,9 @@ class APP(tk.Tk):
         self.title(Globals.app_title)
         self.resizable(0,0)                                             # makes the app window unresizable
 
-        self.files   = ['', '']                                         # only the path to each file
-        self.IDlists = [{}, {}]                                         # ID lists as a reference to check
+        self.files         = ['', '']                                   # only the path to each file
+        self.IDlists       = [{}, {}]                                   # ID lists as a reference to check
+        self.FEED_original = {}                                         # Client's feed names list
 
         # Buttons for files choosing
         self.buttons = {}
@@ -52,6 +53,24 @@ class APP(tk.Tk):
         # Text field for client's feed
         self.clients_feed_list = scrolledtext.ScrolledText(self, width=80, height=25)
         self.clients_feed_list.grid(column=0, row=3, columnspan=4, padx=5, pady=7)
+
+        # Button & label for client's feed strings counter
+        self.buttons['count_feed'] = tk.Button(self,
+                                               text="Посчитать строки",
+                                               command=self.count_feed_clicked,
+                                               padx=10,
+                                               pady=3,
+                                               height=2)
+        self.buttons['count_feed'].grid(column=0, row=4, padx=10, pady=10, sticky=tk.N)
+
+        self.labels['feed_counter'] = {}
+        self.labels['feed_counter']['obj'] = tk.Label(self,
+                                                      padx=12,
+                                                      pady=12,
+                                                      width=25,
+                                                      relief=tk.GROOVE)
+        self.count_feed_clicked()
+        self.labels['feed_counter']['obj'].grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=tk.NW)
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
         self.file_choose_clicked(0)
@@ -76,6 +95,19 @@ class APP(tk.Tk):
                 color = Globals.COLORS['red']
                 self.IDlists[num]['ready'] = False
             self.labels['lbl'+str(num)]['obj'].config(foreground=color, text=text)
+        self.check_main_start_state()
+    def count_feed_clicked(self):
+        TEMP = self.clients_feed_list.get("1.0", tk.END)
+        TEMP = list(TEMP.split("\n"))
+        self.FEED_original['obj']   = FUNC.prepare_FEED_original(TEMP)
+        self.FEED_original['count'] = len(self.FEED_original['obj'])
+        self.FEED_original['ready'] = bool(self.FEED_original['count'])
+        print(self.FEED_original['ready'])
+
+        text = str(self.FEED_original['count']) + ' ' + FUNC.plural_word_endings(self.FEED_original['count'])
+        color = ('red', 'green')[self.FEED_original['ready']]
+        self.labels['feed_counter']['obj'].config(text       = text,
+                                                  foreground = Globals.COLORS[color])
         self.check_main_start_state()
     def check_main_start_state(self):
         print('checking main start button state...')

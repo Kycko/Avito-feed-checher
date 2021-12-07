@@ -41,3 +41,29 @@ def prepare_ID_list(file):
             temp_value = line[index+1:]
             ID_list[temp_key] = temp_value
     return ID_list
+def prepare_FEED_original(list):
+    final_list = []
+    NEXTLINE = False
+
+    for line in list:
+        # print(line)                           # for DEBUG
+        line = line.lower()                     # уменьшаем все буквы
+        # print('"' + line + '"')               # for DEBUG
+        if line:
+            if NEXTLINE:
+                if line[-1] == '"':
+                    line = line[:-1]
+                    NEXTLINE = False
+                final_list[-1] += line
+            elif line[0] == '"':
+                if line[-1] == '"' and len(line) > 1:
+                    final_list.append(line[1:-1])
+                else:
+                    if line.count('"') % 2:
+                        NEXTLINE = True
+                        final_list.append(line[1:])
+                    else:
+                        final_list.append(line)
+            else:
+                final_list.append(line)
+    return final_list
