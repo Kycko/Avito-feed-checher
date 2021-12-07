@@ -34,6 +34,8 @@ def FUNC_plural_word_endings(num):
 # Some specific functions
 def check_file_extention(file):
     return file[-4:] in (".csv", ".txt")
+def FUNC_check_main_start_state():
+    return 0
 def FUNC_prepare_ID_list(file):
     TEMP = FUNC_read_file(file)
     ID_list = {}
@@ -73,7 +75,9 @@ def file_choose_clicked(lbl, file):
         else:
             lbl.config(foreground=COLOUR_red)
         lbl.config(text=text)
+    FUNC_check_main_start_state()
 def button_count_feed_clicked():
+    global FEED_original
     TEMP = clients_feed_list.get("1.0", END)
     TEMP = list(TEMP.split("\n"))
     print(TEMP)                               # for DEBUG
@@ -109,6 +113,7 @@ def button_count_feed_clicked():
         lbl_feed_counter.config(foreground=COLOUR_green)
     else:
         lbl_feed_counter.config(foreground=COLOUR_red)
+    FUNC_check_main_start_state()
 
 # Making GUI
 def FUNC_GUI_init():
@@ -153,7 +158,9 @@ def FUNC_GUI_init():
     lbl_feed_counter = Label(window, text="0 строк", foreground=COLOUR_red, padx=12, pady=12, width=25, relief=GROOVE)
     lbl_feed_counter.grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=NW)
 
-    button_MAIN_START = Button(window, text="ЗАПУСТИТЬ\n»»»", font=TKfont.Font(family='Arial', size=13), command=button_count_feed_clicked, padx=10, pady=3, height=5)
+    text="ЗАПУСТИТЬ\nxxx"
+    font=TKfont.Font(family='Arial', size=13)
+    button_MAIN_START = Button(window, state="disabled", text=text, font=font, command=button_count_feed_clicked, padx=10, pady=3, height=5)
     button_MAIN_START.grid(column=3, row=4, padx=10, pady=10, sticky=E)
 
     return window
