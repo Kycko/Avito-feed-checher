@@ -59,4 +59,6 @@ class APP(tk.Tk):
                 color = Globals.COLORS['red']
                 self.IDlists[num]['ready'] = False
             self.labels['lbl'+str(num)]['obj'].config(foreground=color, text=text)
-        # FUNC_check_main_start_state()                         # to be done later
+        self.check_main_start_state()
+    def check_main_start_state(self):
+        print('checking main start button state...')
