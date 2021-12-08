@@ -171,7 +171,7 @@ class APP(tk.Tk):
             FINAL_ID_list = []
             FINAL_IDs_counter = [-1, -1]        # the list for both files; '-1' means this file wasn't processed
 
-            for i in range(1):                  # launch the main cycle separately for both ID lists
+            for i in range(2):                  # launch the main cycle separately for both ID lists
                 if self.IDlists[i]['ready']:
                     LOCAL_ID_list = []
                     IDs_counter = 0
@@ -181,6 +181,11 @@ class APP(tk.Tk):
                         num, ID = FUNC.MAIN_CYCLE(FEEDorig[index], self.IDlists[i]['obj'])
                         IDs_counter += num
                         LOCAL_ID_list.append(ID)
+
+                        percent = 100*(index+1)/len(FEEDorig)
+                        percent = "{0:.1f} %".format(percent)
+                        print(percent, end="\r")
+                    print()
 
                     FINAL_IDs_counter[i] = IDs_counter
                     if FINAL_ID_list:
