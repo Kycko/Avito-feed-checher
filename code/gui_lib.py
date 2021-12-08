@@ -119,7 +119,7 @@ class APP(tk.Tk):
                 text = ''.join(['[',
                                 str(self.IDlist['count']),
                                 ' ',
-                                FUNC.plural_word_endings(self.IDlist['count']),
+                                FUNC.plural_word_endings(self.IDlist['count'], 0),
                                 '] ',
                                 text])
             else:
@@ -140,7 +140,7 @@ class APP(tk.Tk):
 
         self.FEED_original['ready'] = bool(counter)
 
-        text = str(self.FEED_original['count']) + ' ' + FUNC.plural_word_endings(self.FEED_original['count'])
+        text = str(self.FEED_original['count']) + ' ' + FUNC.plural_word_endings(self.FEED_original['count'], 0)
         color = ('red', 'green')[self.FEED_original['ready']]
         self.labels['feed_counter'].config(text       = text,
                                            foreground = Globals.COLORS[color])
@@ -160,3 +160,22 @@ class APP(tk.Tk):
             self.save_settings()
             count, RESULT = FUNC.MAIN_CYCLE(self.FEED_original['obj'], self.IDlist['obj'])
             FUNC.write_to_the_file(RESULT, Globals.FILES['result'])
+            text = ''
+            if self.checkboxes['clipboard']['var'].get():
+                FUNC.copy_to_clipboard(RESULT)
+                text = 'уже скопирован в буфер обмена и '
+
+            percent = 100*count/self.FEED_original['count']
+            text = ''.join(['Найдено ',
+                            str(count),
+                            ' ',
+                            FUNC.plural_word_endings(count, 1),
+                            ' ({0:.1f}%).'.format(percent),
+                            '\n\nСписок Type ID ',
+                            text,
+                            'сохранён в файле\n"',
+                            Globals.FILES['result'],
+                            '".'])
+
+            tk.messagebox.showinfo('Готово!', text)
+            self.destroy()

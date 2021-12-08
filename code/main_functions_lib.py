@@ -1,3 +1,5 @@
+import win32clipboard
+
 # File reading/writing
 def read_file(filename):
     file = open(filename, 'r', encoding='utf-8')
@@ -8,17 +10,27 @@ def write_to_the_file(data, filename):
     file = open(filename, 'w', encoding='utf-8')
     file.writelines(data)
     file.close()
+def copy_to_clipboard(data):
+    result = ''
+    for line in data:
+        result += line
+
+    win32clipboard.OpenClipboard()
+    win32clipboard.EmptyClipboard()
+    win32clipboard.SetClipboardText(result)
+    win32clipboard.CloseClipboard()
 
 # Some specific functions
-def plural_word_endings(num):
-    words = ['строка', 'строки', 'строк']
+def plural_word_endings(num, dict):             # num: real number, dict: what dictionary ('words') to use
+    words = (('строка', 'строки', 'строк'),
+             ('совпадение', 'совпадения', 'совпадений'))
 
     if all((num % 10 == 1, num % 100 != 11)):
-        return words[0]
+        return words[dict][0]
     elif all((2 <= num % 10 <= 4,
               any((num % 100 < 10, num % 100 >= 20)))):
-        return words[1]
-    return words[2]
+        return words[dict][1]
+    return words[dict][2]
 
 # File checking
 def prepare_ID_list(file):
