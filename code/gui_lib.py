@@ -101,7 +101,7 @@ class APP(tk.Tk):
         self.files         = ['', '']                                       # only the path to each file
         self.IDlists       = [{'obj' : '', 'count' : 0, 'ready' : False},
                               {'obj' : '', 'count' : 0, 'ready' : False}]   # ID lists as a reference to check
-        self.FEED_original  = {'obj' : '', 'count' : 0, 'ready' : False}    # Client's feed names list
+        self.FEED_original  = {'obj' : '', 'count' : 0, 'ready' : False}    # client's feed names list
 
         if OSpath.isfile('settings'):
             data = FUNC.read_file('settings')
@@ -141,8 +141,14 @@ class APP(tk.Tk):
         TEMP = self.clients_feed_list.get("1.0", tk.END)
         TEMP = list(TEMP.split("\n"))
         self.FEED_original['obj']   = FUNC.prepare_FEED_original(TEMP)
-        self.FEED_original['count'] = len(self.FEED_original['obj'])
-        self.FEED_original['ready'] = bool(self.FEED_original['count'])
+
+        counter = 0
+        for i in range(len(self.FEED_original['obj'])):
+            if self.FEED_original['obj'][i]:
+                counter += 1
+        self.FEED_original['count'] = counter
+
+        self.FEED_original['ready'] = bool(counter)
 
         text = str(self.FEED_original['count']) + ' ' + FUNC.plural_word_endings(self.FEED_original['count'])
         color = ('red', 'green')[self.FEED_original['ready']]
@@ -162,4 +168,26 @@ class APP(tk.Tk):
         self.count_feed_clicked()
         if self.ready_for_MAIN_START_condition():
             self.save_settings()
-            print('GOOOOOOOOOO!!!!!!!!!!!11')
+            FINAL_ID_list = []
+            FINAL_IDs_counter = [-1, -1]        # the list for both files; '-1' means this file wasn't processed
+
+            for i in range(1):                  # launch the main cycle separately for both ID lists
+                if self.IDlists[i]['ready']:
+                    LOCAL_ID_list = []
+                    IDs_counter = 0
+                    FEEDorig = self.FEED_original['obj']
+
+                    for index in range(len(FEEDorig)):
+                        num, ID = FUNC.MAIN_CYCLE(FEEDorig[index], self.IDlists[i]['obj'])
+                        IDs_counter += num
+                        LOCAL_ID_list.append(ID)
+
+                    FINAL_IDs_counter[i] = IDs_counter
+                    if FINAL_ID_list:
+                        for index in range(len(FINAL_ID_list)):
+                            if not FINAL_ID_list[index]:
+                                FINAL_ID_list[index] = LOCAL_ID_list[index]
+                    else:
+                        FINAL_ID_list = LOCAL_ID_list
+
+            FUNC.write_to_the_file(FINAL_ID_list, Globals.FILES['result'])

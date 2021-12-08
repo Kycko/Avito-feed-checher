@@ -66,4 +66,23 @@ def prepare_FEED_original(list):
                         final_list.append(line)
             else:
                 final_list.append(line)
+        else:
+            final_list.append(line)
     return final_list
+def MAIN_CYCLE(string, ID_list):
+    FOUND_ID = {}
+
+    for key in ID_list.keys():
+        STR_FOUND = string.find(key)
+        if STR_FOUND > -1:                  # Если -1, значит, ничего не найдено.
+            FOUND_ID[key] = ID_list[key]
+    if len(FOUND_ID):
+        maxlenth = 0
+        maxkey = ""
+        for i in FOUND_ID.keys():
+            if len(i) > maxlenth:
+                maxlenth = len(i)
+                maxkey = i
+        return 1, FOUND_ID[maxkey] + '\n'   # counter, TypeID number
+    else:
+        return 0, '\n'                      # counter, TypeID number

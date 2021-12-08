@@ -1,7 +1,9 @@
 # My ignore list
 *.csv
+settings
 testing Type ID base.txt
 work items.txt
+Список найденных Type ID.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

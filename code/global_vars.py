@@ -1,9 +1,11 @@
 # App version and main window properties
-VERSION = 'v.041'
+VERSION = 'v.042'
 app_width  = 670
 app_height = 690
 app_title  = 'Avito feed checker (запчасти) ' + VERSION
 
-# Colors
-COLORS = {'green' : '#14963A',
-          'red'   : '#D73B41'}
+# Files & colors
+FILES  = {'result' : 'Список найденных Type ID.txt'}
+
+COLORS = {'green'  : '#14963A',
+          'red'    : '#D73B41'}
