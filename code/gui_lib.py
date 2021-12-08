@@ -77,9 +77,12 @@ class APP(tk.Tk):
                                                       relief=tk.GROOVE)
         self.labels['feed_counter']['obj'].grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=tk.NW)
 
+        # Init settings
+        init_checkbox = self.init_settings()
+
         # 'Copy to clipboard' checkbox
         self.checkboxes = {}
-        self.checkboxes['clipboard'] = {'var' : tk.BooleanVar()}
+        self.checkboxes['clipboard'] = {'var' : tk.BooleanVar(value=init_checkbox)}
         self.checkboxes['clipboard']['obj'] = tk.Checkbutton(self,
                                                              text='Скопировать результат в буфер обмена',
                                                              variable=self.checkboxes['clipboard']['var'],
@@ -87,8 +90,6 @@ class APP(tk.Tk):
                                                              offvalue=False)
         self.checkboxes['clipboard']['obj'].grid(column=1, row=5, columnspan=3, padx=10, sticky=tk.E)
 
-        # Init settings
-        self.init_settings()
         self.count_feed_clicked()
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
@@ -142,7 +143,8 @@ class APP(tk.Tk):
             self.save_settings()
             print('GOOOOOOOOOO!!!!!!!!!!!11')
     def save_settings(self):
-        data = ['\n']
+        clipboard_setting = str(int(self.checkboxes['clipboard']['var'].get()))
+        data = [clipboard_setting + '\n']
         for i in range(2):
             data.append(self.files[i]+'\n')
         FUNC.write_to_the_file(data, 'settings')
@@ -159,3 +161,5 @@ class APP(tk.Tk):
                 if OSpath.isfile(file_path):
                     self.files[i] = file_path
                     self.file_choose_clicked(i)
+            return bool(int(data[0][:-1]))
+        return True
