@@ -13,11 +13,6 @@ class APP(tk.Tk):
         self.title(Globals.app_title)
         self.resizable(0,0)                                                 # makes the app window unresizable
 
-        self.files        = ['', '']                                        # only the path to each file
-        self.IDlists      = [{'obj' : '', 'count' : 0, 'ready' : False},
-                             {'obj' : '', 'count' : 0, 'ready' : False}]    # ID lists as a reference to check
-        self.FEED_original = {'obj' : '', 'count' : 0, 'ready' : False}     # Client's feed names list
-
         # Buttons for files choosing
         self.buttons = {}
         for i in range(2):
@@ -81,6 +76,9 @@ class APP(tk.Tk):
                                                       width=25,
                                                       relief=tk.GROOVE)
         self.labels['feed_counter']['obj'].grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=tk.NW)
+
+        # Init settings
+        self.init_settings()
         self.count_feed_clicked()
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
@@ -131,4 +129,23 @@ class APP(tk.Tk):
     def MAIN_START_clicked(self):
         self.count_feed_clicked()
         if self.ready_for_MAIN_START_condition():
+            self.save_settings()
             print('GOOOOOOOOOO!!!!!!!!!!!11')
+    def save_settings(self):
+        data = ['\n']
+        for i in range(2):
+            data.append(self.files[i]+'\n')
+        FUNC.write_to_the_file(data, 'settings')
+    def init_settings(self):
+        self.files         = ['', '']                                       # only the path to each file
+        self.IDlists       = [{'obj' : '', 'count' : 0, 'ready' : False},
+                              {'obj' : '', 'count' : 0, 'ready' : False}]   # ID lists as a reference to check
+        self.FEED_original  = {'obj' : '', 'count' : 0, 'ready' : False}    # Client's feed names list
+
+        if OSpath.isfile('settings'):
+            data = FUNC.read_file('settings')
+            for i in range(2):
+                file_path = data[i+1][:-1]      # without '\n'
+                if OSpath.isfile(file_path):
+                    self.files[i] = file_path
+                    self.file_choose_clicked(i)
