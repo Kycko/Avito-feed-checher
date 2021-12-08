@@ -91,6 +91,27 @@ class APP(tk.Tk):
         self.checkboxes['clipboard']['obj'].grid(column=1, row=5, columnspan=3, padx=10, sticky=tk.E)
 
         self.count_feed_clicked()
+    def save_settings(self):
+        clipboard_setting = str(int(self.checkboxes['clipboard']['var'].get()))
+        data = [clipboard_setting + '\n']
+        for i in range(2):
+            data.append(self.files[i]+'\n')
+        FUNC.write_to_the_file(data, 'settings')
+    def init_settings(self):
+        self.files         = ['', '']                                       # only the path to each file
+        self.IDlists       = [{'obj' : '', 'count' : 0, 'ready' : False},
+                              {'obj' : '', 'count' : 0, 'ready' : False}]   # ID lists as a reference to check
+        self.FEED_original  = {'obj' : '', 'count' : 0, 'ready' : False}    # Client's feed names list
+
+        if OSpath.isfile('settings'):
+            data = FUNC.read_file('settings')
+            for i in range(2):
+                file_path = data[i+1][:-1]      # without '\n'
+                if OSpath.isfile(file_path):
+                    self.files[i] = file_path
+                    self.file_choose_clicked(i)
+            return bool(int(data[0][:-1]))
+        return True
     def btn0_clicked(self):
         self.files[0] = filedialog.askopenfilename(initialdir= OSpath.dirname(__file__))
         self.file_choose_clicked(0)
@@ -142,24 +163,3 @@ class APP(tk.Tk):
         if self.ready_for_MAIN_START_condition():
             self.save_settings()
             print('GOOOOOOOOOO!!!!!!!!!!!11')
-    def save_settings(self):
-        clipboard_setting = str(int(self.checkboxes['clipboard']['var'].get()))
-        data = [clipboard_setting + '\n']
-        for i in range(2):
-            data.append(self.files[i]+'\n')
-        FUNC.write_to_the_file(data, 'settings')
-    def init_settings(self):
-        self.files         = ['', '']                                       # only the path to each file
-        self.IDlists       = [{'obj' : '', 'count' : 0, 'ready' : False},
-                              {'obj' : '', 'count' : 0, 'ready' : False}]   # ID lists as a reference to check
-        self.FEED_original  = {'obj' : '', 'count' : 0, 'ready' : False}    # Client's feed names list
-
-        if OSpath.isfile('settings'):
-            data = FUNC.read_file('settings')
-            for i in range(2):
-                file_path = data[i+1][:-1]      # without '\n'
-                if OSpath.isfile(file_path):
-                    self.files[i] = file_path
-                    self.file_choose_clicked(i)
-            return bool(int(data[0][:-1]))
-        return True
