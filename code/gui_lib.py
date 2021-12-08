@@ -48,7 +48,7 @@ class APP(tk.Tk):
         self.labels['feed_hint']['obj'].grid(column=0, row=2, columnspan=4, padx=5, pady=5, sticky=tk.W)
 
         # Text field for client's feed
-        self.clients_feed_list = scrolledtext.ScrolledText(self, width=80, height=25)
+        self.clients_feed_list = scrolledtext.ScrolledText(self, width=80, height=24)
         self.clients_feed_list.grid(column=0, row=3, columnspan=4, padx=5, pady=7)
 
         # Start main processing button
@@ -58,7 +58,7 @@ class APP(tk.Tk):
                                                padx=10,
                                                pady=3,
                                                height=5)
-        self.buttons['MAIN_START'].grid(column=3, row=4, padx=10, pady=10, sticky=tk.E)
+        self.buttons['MAIN_START'].grid(column=3, row=4, padx=10, pady=5, sticky=tk.E)
 
         # Button & label for client's feed strings counter
         self.buttons['count_feed'] = tk.Button(self,
@@ -76,6 +76,16 @@ class APP(tk.Tk):
                                                       width=25,
                                                       relief=tk.GROOVE)
         self.labels['feed_counter']['obj'].grid(column=1, row=4, columnspan=2, padx=10, pady=10, sticky=tk.NW)
+
+        # 'Copy to clipboard' checkbox
+        self.checkboxes = {}
+        self.checkboxes['clipboard'] = {'var' : tk.BooleanVar()}
+        self.checkboxes['clipboard']['obj'] = tk.Checkbutton(self,
+                                                             text='Скопировать результат в буфер обмена',
+                                                             variable=self.checkboxes['clipboard']['var'],
+                                                             onvalue=True,
+                                                             offvalue=False)
+        self.checkboxes['clipboard']['obj'].grid(column=1, row=5, columnspan=3, padx=10, sticky=tk.E)
 
         # Init settings
         self.init_settings()

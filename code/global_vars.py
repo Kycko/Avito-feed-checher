@@ -1,7 +1,7 @@
 # App version and main window properties
-VERSION = 'v.037'
+VERSION = 'v.039'
 app_width  = 670
-app_height = 685
+app_height = 690
 app_title  = 'Avito feed checker (запчасти) ' + VERSION
 
 # Colors
