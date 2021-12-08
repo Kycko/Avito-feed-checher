@@ -1,3 +1,4 @@
+import pywintypes
 import win32clipboard
 
 # File reading/writing

@@ -1,5 +1,7 @@
 # My ignore list
 *.csv
+pythoncom*
+pywintypes*
 settings
 testing Type ID base.txt
 work items.txt

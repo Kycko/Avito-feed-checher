@@ -163,7 +163,7 @@ class APP(tk.Tk):
             text = ''
             if self.checkboxes['clipboard']['var'].get():
                 FUNC.copy_to_clipboard(RESULT)
-                text = 'уже скопирован в буфер обмена и '
+                text = 'уже скопирован в буфер обмена\nи '
 
             percent = 100*count/self.FEED_original['count']
             text = ''.join(['Найдено ',
