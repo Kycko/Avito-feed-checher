@@ -79,7 +79,7 @@ def prepare_FEED_original(list):
                         final_list.append(line)
             else:
                 final_list.append(line)
-        else:
+        elif not NEXTLINE:
             final_list.append(line)
     return final_list
 def MAIN_CYCLE(FEED_original, ID_list):
