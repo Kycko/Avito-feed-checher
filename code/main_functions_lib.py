@@ -11,27 +11,6 @@ def write_to_the_file(data, filename):
     file = open(filename, 'w', encoding='utf-8')
     file.writelines(data)
     file.close()
-def join_multiple_lines(list):
-    result = []
-    NEXTLINE = False
-
-    for line in list:
-        if NEXTLINE:
-            if line.count('"') % 2:
-                NEXTLINE = False
-                if line[:-1] == '"' or line == '"':
-                    line = line[:-1]
-            result[-1] += line
-        elif line.count('"') % 2:
-            NEXTLINE = True
-            result.append(line[1:])
-        else:
-            result.append(line)
-
-    for i in range(len(result)):
-        result[i] = result[i].replace('""','"')                  # кавычки удваиваются при переносе текста
-
-    return result
 def copy_to_clipboard(data):
     result = ''
     for line in data:
@@ -41,6 +20,41 @@ def copy_to_clipboard(data):
     win32clipboard.EmptyClipboard()
     win32clipboard.SetClipboardText(result)
     win32clipboard.CloseClipboard()
+
+# Preparing lists from files
+def del_enters_in_list(list):                       # ТОЛЬКО удаляем переносы строки в конце каждого элемента списка
+    for i in range(len(list)):
+        if list[i][-1] == '\n':
+            list[i] = list[i][:-1]
+    return list
+def join_multiple_lines(list):                      # ТОЛЬКО соединяем несколько строк из одной ячейки в одну строку
+    result = []
+    NEXTLINE = False
+
+    for line in list:
+        if NEXTLINE:
+            result[-1] += line
+            if line.count('"') % 2:
+                NEXTLINE = False
+        else:
+            result.append(line)
+            if line.count('"') % 2:
+                NEXTLINE = True
+
+    return result
+def rm_both_starting_and_ending_quotes(list):       # Удаляем кавычки с обеих сторон, ТОЛЬКО если они есть с обеих сторон
+    for i in range(len(list)):
+        if len(list[i]) > 1 and list[i][0] == '"' and list[i][-1] == '"':
+            list[i] = list[i][1:-1]
+    return list
+def rm_doubled_quotes(list):                        # ТОЛЬКО меняем двойные кавычки на одинарные (двоятся при копировании)
+    for i in range(len(list)):
+        list[i] = list[i].replace('""','"')
+    return list
+def make_list_lower(list):                          # ТОЛЬКО превращаем ВСЕ буквы в строчные
+    for i in range(len(list)):
+        list[i] = list[i].lower()
+    return list
 
 # Some specific functions
 def plural_word_endings(num, dict):             # num: real number, dict: what dictionary ('words') to use
@@ -53,71 +67,39 @@ def plural_word_endings(num, dict):             # num: real number, dict: what d
               any((num % 100 < 10, num % 100 >= 20)))):
         return words[dict][1]
     return words[dict][2]
-def del_start_end_quotes(string):
-    if string[0] == '"':
-        string = string[1:]
-    if string[-1] == '"':
-        string = string[:-1]
-    return string
-def del_enters_in_list(list):
-    for i in range(len(list)):
-        if list[i][-1] == '\n':
-            list[i] = list[i][:-1]
-    return list
 
 # File checking
 def prepare_ID_list(file):
-    TEMP = read_file(file)
-    TEMP = del_enters_in_list(TEMP)
-    TEMP = join_multiple_lines(TEMP)
-    ID_list = {}
+    list = read_file(file)
+    list = del_enters_in_list(list)
+    list = join_multiple_lines(list)
 
-    for line in TEMP:
-        # print(line)                                       # for DEBUG
-        if line != '\n':
-            line = line.lower()                                 # уменьшаем все буквы
+    multilist = [[], []]                # [KEYS, VALUES]
+    for line in list:                   # Делим на отдельные списки ключи и значения, чтобы убрать из них всё лишнее и затем соединить в словарь
+        if line:
             index = line.rfind(",")
-            temp_key = line[:index].replace('""','"')           # кавычки удваиваются при экспорте в .csv
-            temp_key = del_start_end_quotes(temp_key)
-            if line[-1] == "\n":
-                line = line[:-1]
+            multilist[0].append(line[:index])
+            multilist[1].append(line[index+1:])
+    for i in range(2):
+        multilist[i] = rm_both_starting_and_ending_quotes(multilist[i])
+        multilist[i] = rm_doubled_quotes(multilist[i])
+        multilist[i] = make_list_lower(multilist[i])
+        # print(multilist[i])                           # for DEBUG
 
-            temp_value = line[index+1:]
-            temp_value = del_start_end_quotes(temp_value)
-            ID_list[temp_key] = temp_value
-    # print(ID_list)                              # for DEBUG
+    ID_list = {}
+    for i in range(len(multilist[0])):
+        ID_list[multilist[0][i]] = multilist[1][i]
+
+    # print(ID_list)                                    # for DEBUG
     return ID_list
 def prepare_FEED_original(list):
     list = join_multiple_lines(list)
-    final_list = []
-    NEXTLINE = False
+    list = rm_both_starting_and_ending_quotes(list)
+    list = rm_doubled_quotes(list)
+    list = make_list_lower(list)
 
-    for line in list:
-        # print(line)                           # for DEBUG
-        line = line.lower()                     # уменьшаем все буквы
-        line = line.replace('""','"')   # кавычки удваиваются при копировании
-        # print('"' + line + '"')               # for DEBUG
-        if line:
-            if NEXTLINE:
-                if line[-1] == '"':
-                    line = line[:-1]
-                    NEXTLINE = False
-                final_list[-1] += line
-            elif line[0] == '"':
-                if line[-1] == '"' and len(line) > 1:
-                    final_list.append(line[1:-1])
-                else:
-                    if line.count('"') % 2:
-                        NEXTLINE = True
-                        final_list.append(line[1:])
-                    else:
-                        final_list.append(line)
-            else:
-                final_list.append(line)
-        elif not NEXTLINE:
-            final_list.append(line)
-    # print(final_list)                           # for DEBUG
-    return final_list
+    # print(list)       # for DEBUG
+    return list
 def MAIN_CYCLE(FEED_original, ID_list):
     FINAL_ID_list = []
     FOUND_IDs_counter = 0
