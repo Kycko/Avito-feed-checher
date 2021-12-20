@@ -85,7 +85,7 @@ def prepare_ID_list(file):
             temp_value = line[index+1:]
             temp_value = del_start_end_quotes(temp_value)
             ID_list[temp_key] = temp_value
-    print(ID_list)                              # for DEBUG
+    # print(ID_list)                              # for DEBUG
     return ID_list
 def prepare_FEED_original(list):
     list = join_multiple_lines(list)
@@ -116,7 +116,7 @@ def prepare_FEED_original(list):
                 final_list.append(line)
         elif not NEXTLINE:
             final_list.append(line)
-    print(final_list)                           # for DEBUG
+    # print(final_list)                           # for DEBUG
     return final_list
 def MAIN_CYCLE(FEED_original, ID_list):
     FINAL_ID_list = []
