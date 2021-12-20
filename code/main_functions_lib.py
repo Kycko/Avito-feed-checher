@@ -34,6 +34,32 @@ def plural_word_endings(num, dict):             # num: real number, dict: what d
     return words[dict][2]
 
 # File checking
+def check_line_for_multiple_lines(line, NEXTLINE, final_list):
+    # print(line)                               # for DEBUG
+    line = line.lower()                         # уменьшаем все буквы
+    # print('"' + line + '"')                   # for DEBUG
+
+    if line:
+        if NEXTLINE:
+            if line[-1] == '"':
+                line = line[:-1]
+                NEXTLINE = False
+            final_list[-1] += line
+        elif line[0] == '"':
+            if line[-1] == '"' and len(line) > 1:
+                final_list.append(line[1:-1])
+            else:
+                if line.count('"') % 2:
+                    NEXTLINE = True
+                    final_list.append(line[1:])
+                else:
+                    final_list.append(line)
+        else:
+            final_list.append(line)
+    elif not NEXTLINE:
+        final_list.append(line)
+
+    return NEXTLINE, final_list
 def prepare_ID_list(file):
     TEMP = read_file(file)
     ID_list = {}
@@ -41,9 +67,9 @@ def prepare_ID_list(file):
     for line in TEMP:
         # print(line)                                       # for DEBUG
         if line != '\n':
-            line = line.lower()                                 # уменьшаем все буквы
+            line = line.lower()                             # уменьшаем все буквы
             index = line.rfind(",")
-            temp_key = line[:index].replace('""','"')           # кавычки удваиваются при экспорте в .csv
+            temp_key = line[:index].replace('""','"')       # кавычки удваиваются при экспорте в .csv
             if temp_key[0] == '"':
                 temp_key = temp_key[1:]
             if temp_key[-1] == '"':
@@ -53,34 +79,14 @@ def prepare_ID_list(file):
 
             temp_value = line[index+1:]
             ID_list[temp_key] = temp_value
+            # print(temp_key + " = " + temp_value)          # for DEBUG
     return ID_list
 def prepare_FEED_original(list):
-    final_list = []
     NEXTLINE = False
+    final_list = []
 
     for line in list:
-        # print(line)                           # for DEBUG
-        line = line.lower()                     # уменьшаем все буквы
-        # print('"' + line + '"')               # for DEBUG
-        if line:
-            if NEXTLINE:
-                if line[-1] == '"':
-                    line = line[:-1]
-                    NEXTLINE = False
-                final_list[-1] += line
-            elif line[0] == '"':
-                if line[-1] == '"' and len(line) > 1:
-                    final_list.append(line[1:-1])
-                else:
-                    if line.count('"') % 2:
-                        NEXTLINE = True
-                        final_list.append(line[1:])
-                    else:
-                        final_list.append(line)
-            else:
-                final_list.append(line)
-        elif not NEXTLINE:
-            final_list.append(line)
+        NEXTLINE, final_list = check_line_for_multiple_lines(line, NEXTLINE, final_list)
     return final_list
 def MAIN_CYCLE(FEED_original, ID_list):
     FINAL_ID_list = []
