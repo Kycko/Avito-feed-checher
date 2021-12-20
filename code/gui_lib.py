@@ -1,6 +1,7 @@
 import global_vars as Globals
 import main_functions_lib as FUNC
 import tkinter as tk
+import tkinter.messagebox as TKmessagebox
 from os import path as OSpath
 from tkinter import filedialog
 from tkinter import scrolledtext
@@ -177,5 +178,5 @@ class APP(tk.Tk):
                             Globals.FILES['result'],
                             '".'])
 
-            tk.messagebox.showinfo('Готово!', text)
+            TKmessagebox.showinfo('Готово!', text)
             self.destroy()

@@ -34,11 +34,11 @@ def join_multiple_lines(list):                      # ТОЛЬКО соедин�
     for line in list:
         if NEXTLINE:
             result[-1] += line
-            if line.count('"') % 2:
+            if line and line[-1] == '"' and line.count('"') % 2:
                 NEXTLINE = False
         else:
             result.append(line)
-            if line.count('"') % 2:
+            if line and line[0] == '"' and line.count('"') % 2:
                 NEXTLINE = True
 
     return result
@@ -50,6 +50,11 @@ def rm_both_starting_and_ending_quotes(list):       # Удаляем кавыч�
 def rm_doubled_quotes(list):                        # ТОЛЬКО меняем двойные кавычки на одинарные (двоятся при копировании)
     for i in range(len(list)):
         list[i] = list[i].replace('""','"')
+    return list
+def rm_ending_space(list):                          # ТОЛЬКО удаляем лишние пробелы в конце строк
+    for i in range(len(list)):
+        while list[i] and list[i][-1] == ' ':
+            list[i] = list[i][:-1]
     return list
 def make_list_lower(list):                          # ТОЛЬКО превращаем ВСЕ буквы в строчные
     for i in range(len(list)):
@@ -73,6 +78,7 @@ def prepare_ID_list(file):
     list = read_file(file)
     list = del_enters_in_list(list)
     list = join_multiple_lines(list)
+    # print(list)                       # for DEBUG
 
     multilist = [[], []]                # [KEYS, VALUES]
     for line in list:                   # Делим на отдельные списки ключи и значения, чтобы убрать из них всё лишнее и затем соединить в словарь
@@ -84,6 +90,7 @@ def prepare_ID_list(file):
         multilist[i] = rm_both_starting_and_ending_quotes(multilist[i])
         multilist[i] = rm_doubled_quotes(multilist[i])
         multilist[i] = make_list_lower(multilist[i])
+        multilist[i] = rm_ending_space(multilist[i])
         # print(multilist[i])                           # for DEBUG
 
     ID_list = {}
