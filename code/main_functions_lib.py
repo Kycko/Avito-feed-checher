@@ -22,16 +22,18 @@ def copy_to_clipboard(data):
     win32clipboard.CloseClipboard()
 
 # Preparing lists from files
-def del_enters_in_list(list):                       # ТОЛЬКО удаляем переносы строки в конце каждого элемента списка
+def del_enters_in_list(list):                           # ТОЛЬКО удаляем переносы строки в конце каждого элемента списка
     for i in range(len(list)):
         if list[i][-1] == '\n':
             list[i] = list[i][:-1]
     return list
-def join_multiple_lines(list):                      # ТОЛЬКО соединяем несколько строк из одной ячейки в одну строку
+def join_multiple_lines(list, enters_warning=False):    # ТОЛЬКО соединяем несколько строк из одной ячейки в одну строку
     result = []
     NEXTLINE = False
+    idlist_enters = 0                                   # Для оповещения о наличии переноса в списке Type ID
 
     for line in list:
+        idlist_enters += 1
         if NEXTLINE:
             result[-1] += line
             if line and line[-1] == '"' and line.count('"') % 2:
@@ -40,6 +42,10 @@ def join_multiple_lines(list):                      # ТОЛЬКО соедин�
             result.append(line)
             if line and line[0] == '"' and line.count('"') % 2:
                 NEXTLINE = True
+                if enters_warning:
+                    print('!!!Несколько строк в одной ячейке строки [' + str(idlist_enters) + ']!!!')
+                    print('--------------------------------------------------')
+                    print()
 
     return result
 def rm_both_starting_and_ending_quotes(list):       # Удаляем кавычки с обеих сторон, ТОЛЬКО если они есть с обеих сторон
@@ -62,7 +68,7 @@ def make_list_lower(list):                          # ТОЛЬКО превра�
     return list
 
 # Some specific functions
-def plural_word_endings(num, dict):             # num: real number, dict: what dictionary ('words') to use
+def plural_word_endings(num, dict):                 # num: real number, dict: what dictionary ('words') to use
     words = (('строка', 'строки', 'строк'),
              ('совпадение', 'совпадения', 'совпадений'))
 
@@ -77,7 +83,7 @@ def plural_word_endings(num, dict):             # num: real number, dict: what d
 def prepare_ID_list(file):
     list = read_file(file)
     list = del_enters_in_list(list)
-    list = join_multiple_lines(list)
+    list = join_multiple_lines(list, True)
     # print(list)                       # for DEBUG
 
     multilist = [[], []]                # [KEYS, VALUES]
@@ -94,10 +100,19 @@ def prepare_ID_list(file):
         # print(multilist[i])                           # for DEBUG
 
     ID_list = {}
+    doubles_counter = 0
     for i in range(len(multilist[0])):
+        if multilist[0][i] in ID_list:
+            print('Дубль записи в списке Type ID: ' + multilist[0][i])
+            doubles_counter += 1
         ID_list[multilist[0][i]] = multilist[1][i]
 
     # print(ID_list)                                    # for DEBUG
+    if doubles_counter:
+        print('--------------------------------------------------')
+        print('Всего дублей: ' + str(doubles_counter))
+        print('--------------------------------------------------')
+        print()
     return ID_list
 def prepare_FEED_original(list):
     list = join_multiple_lines(list)
