@@ -103,11 +103,11 @@ def prepare_ID_list(file):
     doubles_counter = 0
     for i in range(len(multilist[0])):
         if multilist[0][i] in ID_list:
-            print('Дубль записи в списке Type ID: ' + multilist[0][i])
+            # print('Дубль записи в списке Type ID: ' + multilist[0][i])     # убрал вывод каждого дубля в консоль, чтобы на виду были сообщения о переносах строк внутри одной ячейки
             doubles_counter += 1
         ID_list[multilist[0][i]] = multilist[1][i]
+        # print(multilist[0][i] + '      : ' + multilist[1][i])
 
-    # print(ID_list)                                    # for DEBUG
     if doubles_counter:
         print('--------------------------------------------------')
         print('Всего дублей: ' + str(doubles_counter))
