@@ -144,6 +144,13 @@ def MAIN_CYCLE(FEED_original, ID_list):
                 if len(i) > maxlenth:
                     maxlenth = len(i)
                     maxkey = i
+
+        # следующие 4 строки просто убирают кавычки, если они появились в ID каким-то невообразимым образом
+            if FOUND_ID[maxkey][0] == '"':
+                FOUND_ID[maxkey] = FOUND_ID[maxkey][1:]
+            if FOUND_ID[maxkey][-1] == '"':
+                FOUND_ID[maxkey] = FOUND_ID[maxkey][:-1]
+
             FINAL_ID_list.append(FOUND_ID[maxkey] + "\n")
             FOUND_IDs_counter += 1
         else:
