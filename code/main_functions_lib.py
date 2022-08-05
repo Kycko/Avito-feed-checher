@@ -106,6 +106,10 @@ def prepare_ID_list(file):
             # print('Дубль записи в списке Type ID: ' + multilist[0][i])     # убрал вывод каждого дубля в консоль, чтобы на виду были сообщения о переносах строк внутри одной ячейки
             doubles_counter += 1
         ID_list[multilist[0][i]] = multilist[1][i]
+        if not multilist[1][i]:
+            print('Не указан ID для наименования: ' + multilist[0][i])
+            print('--------------------------------------------------')
+            print()
         # print(multilist[0][i] + '      : ' + multilist[1][i])
 
     if doubles_counter:
@@ -146,10 +150,13 @@ def MAIN_CYCLE(FEED_original, ID_list):
                     maxkey = i
 
         # следующие 4 строки просто убирают кавычки, если они появились в ID каким-то невообразимым образом
-            if FOUND_ID[maxkey][0] == '"':
-                FOUND_ID[maxkey] = FOUND_ID[maxkey][1:]
-            if FOUND_ID[maxkey][-1] == '"':
-                FOUND_ID[maxkey] = FOUND_ID[maxkey][:-1]
+            # print(FEED_original[index])
+            # print(FOUND_ID[maxkey])
+            if len(FOUND_ID[maxkey]):
+                if FOUND_ID[maxkey][0] == '"':
+                    FOUND_ID[maxkey] = FOUND_ID[maxkey][1:]
+                if FOUND_ID[maxkey][-1] == '"':
+                    FOUND_ID[maxkey] = FOUND_ID[maxkey][:-1]
 
             FINAL_ID_list.append(FOUND_ID[maxkey] + "\n")
             FOUND_IDs_counter += 1
